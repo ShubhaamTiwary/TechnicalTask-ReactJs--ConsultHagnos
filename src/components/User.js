@@ -9,35 +9,30 @@ const User = () => {
   const [card, setCard] = useState({});
   const [product, setProduct] = useState({});
 
+  const [address,setAddress]=useState(null);
+
   useEffect(() => {
-    axios.get("https://fakerapi.it/api/v1/persons?_quantity=1&amp;_gender=male&amp;_birthday_start=2005-01-01")
-    .then(response => {
-      setUser(response.data.data[0]);
-      // console.log(response.data.data[0].firstname);
-    })
-    .catch(error => {
-      console.error("Error fetching User:", error);
-    });
 
-    axios.get("https://fakerapi.it/api/v1/companies?_quantity=1")
-    .then(response => {
-      setCompany(response.data.data[0]);
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error("Error fetching User:", error);
-    });
+    async function fetchData() {
+      try {
+        const UserResponse = await fetch("https://fakerapi.it/api/v1/persons?_quantity=1&amp;_gender=male&amp;_birthday_start=2005-01-01");
+        const UserData = await UserResponse.json();
+        // console.log(UserData.data[0]);
+        setUser(UserData.data[0]);
 
-    axios.get("https://fakerapi.it/api/v1/credit_cards?_quantity=1")
-    .then(response => {
-      setCard(response.data.data[0]);
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error("Error fetching User:", error);
-    });
+        const CompanyResponse = await fetch("https://fakerapi.it/api/v1/companies?_quantity=1");
+        const CompanyData = await CompanyResponse.json();
+        setCompany(CompanyData.data[0]);
+        setAddress(CompanyData.data[0].addresses);
+        // console.log(CompanyData.data[0].addresses);
 
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
   }, [])
+
 
   return (
     <div className='userDetails'>
@@ -59,6 +54,20 @@ const User = () => {
         <span className='details'>Country:<span className='text'> {company?.country}</span></span>
         <span className='details'>Phone Number<span className='text'> {company?.phone}</span></span>
 
+        <h3>Company Address</h3>
+        <span>{address?.map((ele,i)=>{
+          return (
+          <div className='address'>
+            <>Address-{i+1}</>
+            <span className='details'>Street:<span className='text'> {ele?.street}</span></span>
+            <span className='details'>StreetName:<span className='text'> {ele?.streetName}</span></span>
+            <span className='details'>City:<span className='text'> {ele?.city}</span></span>
+            <span className='details'>Country:<span className='text'> {ele?.country}</span></span>
+          </div>
+          )
+        })}
+        </span>
+
         <h3>Contact Person Details</h3>
         <span className='details'>FirstName:<span className='text'> {company?.contact?.firstname}</span></span>
         <span className='details'>LastName:<span className='text'> {company?.contact?.lastname}</span></span>
@@ -69,7 +78,7 @@ const User = () => {
 
       <div className='Row'>
         <h2>Card Details</h2>
-        
+
       </div>
 
       <div className='Row'>
