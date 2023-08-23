@@ -4,12 +4,12 @@ import axios from "axios";
 
 const User = () => {
 
-  const [user, setUser] = useState({});
-  const [company, setCompany] = useState({});
-  const [card, setCard] = useState({});
-  const [product, setProduct] = useState({});
+  const [user, setUser] = useState(null);
+  const [company, setCompany] = useState(null);
+  const [card, setCard] = useState(null);
+  const [product, setProduct] = useState(null);
 
-  const [address,setAddress]=useState(null);
+  const [address, setAddress] = useState(null);
 
   useEffect(() => {
 
@@ -26,6 +26,15 @@ const User = () => {
         setAddress(CompanyData.data[0].addresses);
         // console.log(CompanyData.data[0].addresses);
 
+        const CardResponse = await fetch("https://fakerapi.it/api/v1/credit_cards?_quantity=1");
+        const CardData = await CardResponse.json();
+        setCard(CardData.data[0]);
+
+        const ProductResponse = await fetch("https://fakerapi.it/api/v1/products?_quantity=3&amp;_taxes=1&amp;_categories_type=uuid");
+        const productData = await ProductResponse.json();
+        setProduct(productData.data);
+        console.log(productData.data);
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -37,7 +46,7 @@ const User = () => {
   return (
     <div className='userDetails'>
       <div className='Row'>
-        <h2>User Details</h2>
+        <h2 className='heading'>User Details</h2>
         <span className='details'>First Name: <span className='text'> {user?.firstname}</span></span>
         <span className='details'>Last Name:<span className='text'> {user?.lastname}</span></span>
         <span className='details'>Email: <span className='text'> {user?.email}</span></span>
@@ -46,7 +55,7 @@ const User = () => {
       </div>
 
       <div className='Row'>
-        <h2>Company Details</h2>
+        <h2 className='heading'>Company Details</h2>
 
         <h3>Basic Info</h3>
         <span className='details'>Company Name:<span className='text'> {company?.name}</span></span>
@@ -55,15 +64,15 @@ const User = () => {
         <span className='details'>Phone Number<span className='text'> {company?.phone}</span></span>
 
         <h3>Company Address</h3>
-        <span>{address?.map((ele,i)=>{
+        <span>{address?.map((ele, i) => {
           return (
-          <div className='address'>
-            <>Address-{i+1}</>
-            <span className='details'>Street:<span className='text'> {ele?.street}</span></span>
-            <span className='details'>StreetName:<span className='text'> {ele?.streetName}</span></span>
-            <span className='details'>City:<span className='text'> {ele?.city}</span></span>
-            <span className='details'>Country:<span className='text'> {ele?.country}</span></span>
-          </div>
+            <div className='address'>
+              <>Address-{i + 1}</>
+              <span className='details'>Street:<span className='text'> {ele?.street}</span></span>
+              <span className='details'>StreetName:<span className='text'> {ele?.streetName}</span></span>
+              <span className='details'>City:<span className='text'> {ele?.city}</span></span>
+              <span className='details'>Country:<span className='text'> {ele?.country}</span></span>
+            </div>
           )
         })}
         </span>
@@ -77,12 +86,25 @@ const User = () => {
       </div>
 
       <div className='Row'>
-        <h2>Card Details</h2>
-
+        <h2 className='heading'>Card Details</h2>
+        <span className='details'>Type:<span className='text'> {card?.type}</span></span>
+        <span className='details'>Card Number:<span className='text'> {card?.number}</span></span>
+        <span className='details'>Card owner:<span className='text'> {card?.owner}</span></span>
       </div>
 
       <div className='Row'>
-
+        <h2 className='heading'>Previously Bought Products</h2>
+        <span>
+          {product?.map((ele,i)=>{
+            return (
+              <div className='address'>
+              <span className='details'>Name:<span className='text'> {ele?.name} (id: {ele?.id})</span></span>
+              <span className='details'>Description:<span className='text'> {ele?.description}</span></span>
+              <span className='details'>Price:<span className='text'> {ele?.price}</span></span>
+              </div>
+            )
+          })}
+        </span>
       </div>
 
 
