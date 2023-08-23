@@ -166,6 +166,8 @@ function App() {
     const validationErrors = validateFormData(formData);
     if (Object.keys(validationErrors).length === 0) {
       console.log(formData); // You can handle form submission here
+      alert("SUCCESS !!");
+      setFormData({});
     } else {
       setErrors(validationErrors);
     }
