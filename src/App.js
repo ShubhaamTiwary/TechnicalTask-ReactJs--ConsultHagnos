@@ -116,7 +116,7 @@ function App() {
       confirmPassword: value
     }));
 
-    if (formData.password!=value) {
+    if (formData.password && formData.password!=value) {
       errors.confirmPassword = "Confirm Password Did Not Match";
     }
     else{
@@ -169,6 +169,12 @@ function App() {
     } else {
       setErrors(validationErrors);
     }
+  };
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePassword = (e) => {
+    e.preventDefault();
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   const today = new Date().toISOString().split("T")[0];
@@ -314,19 +320,22 @@ function App() {
         <div className='div'>
         <input
           className={errors.password ? "error-form-field" : "form-field"}
-          type="text"
+          type={!showPassword?"password":"text"}
           placeholder="Password"
           name="password"
           value={formData.password}
           onChange={handleInputChange}
         />
+        <button className="show-password-button" onClick={handleTogglePassword}>
+          {showPassword ? "Hide" : "Show"} Password
+        </button>
         </div>
         {errors.password && <div className="error-message">{errors.password}</div>}
 
         <div className='div'>
         <input
           className={errors.confirmPassword ? "error-form-field" : "form-field"}
-          type="password"
+          type={!showPassword?"password":"text"}
           placeholder="Confirm Password"
           name="confirmPassword"
           value={formData.confirmPassword}
